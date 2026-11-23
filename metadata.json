@@ -1,0 +1,6 @@
+{
+  "name": "WishMantra",
+  "description": "WishMantra Gift Gallery in Sadar Bazaar, Ambala Cantt — Customised Gifts, Return Gifts, Stationery, Gaming Gear & Bulk Orders.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
