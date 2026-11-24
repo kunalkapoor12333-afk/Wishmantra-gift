@@ -175,17 +175,17 @@ export function CartDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Shopping Bag and Billing"
-        className="w-full max-w-md h-[100dvh] bg-[#FDF9FA] border-l border-[#F1DCE3] shadow-2xl flex flex-col"
+        className="w-full max-w-md h-[100dvh] bg-[#FDF0F5] border-l border-[#F4C2D7] shadow-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="no-print px-4 sm:px-6 py-4 border-b border-[#F1DCE3] flex items-center justify-between bg-white">
+        <div className="no-print px-4 sm:px-6 py-4 border-b border-[#F4C2D7] flex items-center justify-between bg-white">
           <div className="flex items-center gap-2.5">
             {step === 'bag' ? (
-              <ShoppingBag className="w-5 h-5 text-[#B83262]" />
+              <ShoppingBag className="w-5 h-5 text-[#C2255C]" />
             ) : (
-              <Receipt className="w-5 h-5 text-[#B83262]" />
+              <Receipt className="w-5 h-5 text-[#C2255C]" />
             )}
-            <h2 className="font-display text-xl font-semibold text-[#23191D]">
+            <h2 className="font-display text-xl font-semibold text-[#2B121D]">
               {step === 'bag'
                 ? `Your Bag & Bill (${totals.itemCount})`
                 : step === 'checkout'
@@ -197,7 +197,7 @@ export function CartDrawer({
             type="button"
             onClick={handleClose}
             aria-label="Close shopping bag"
-            className="min-w-[40px] min-h-[40px] inline-flex items-center justify-center p-2 rounded-lg text-[#5A4950] hover:text-[#23191D] hover:bg-[#FCEFF4] transition-colors cursor-pointer"
+            className="min-w-[40px] min-h-[40px] inline-flex items-center justify-center p-2 rounded-lg text-[#5E3E4B] hover:text-[#2B121D] hover:bg-[#FCE4EE] transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -224,26 +224,26 @@ export function CartDrawer({
               <button
                 type="button"
                 onClick={handleClose}
-                className="no-print w-full min-h-[44px] px-5 py-2.5 rounded-lg border border-[#EAD5DC] bg-white text-sm font-medium text-[#23191D] hover:border-[#B83262] cursor-pointer"
+                className="no-print w-full min-h-[44px] px-5 py-2.5 rounded-lg border border-[#F4C2D7] bg-white text-sm font-medium text-[#2B121D] hover:border-[#C2255C] cursor-pointer"
               >
                 Continue Shopping
               </button>
             </div>
           ) : items.length === 0 ? (
             <div className="py-16 text-center space-y-4">
-              <div className="w-12 h-12 rounded-full bg-[#FCEFF4] text-[#B83262] mx-auto flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#FCE4EE] border border-[#F4C2D7] text-[#C2255C] mx-auto flex items-center justify-center">
                 <ShoppingBag className="w-5 h-5" />
               </div>
-              <h3 className="font-display text-xl font-semibold text-[#23191D]">
+              <h3 className="font-display text-xl font-semibold text-[#2B121D]">
                 Your gift bag is empty
               </h3>
-              <p className="text-sm text-[#6E5C63] max-w-xs mx-auto">
+              <p className="text-sm text-[#5E3E4B] max-w-xs mx-auto">
                 Add customised keepsakes, stationery sets, or gaming combos starting ₹149 to generate your live GST bill.
               </p>
               <button
                 type="button"
                 onClick={handleClose}
-                className="min-h-[44px] px-5 py-2.5 rounded-lg bg-[#B83262] text-white text-sm font-medium hover:bg-[#98254F] transition-colors cursor-pointer"
+                className="min-h-[44px] px-5 py-2.5 rounded-lg bg-[#C2255C] text-white text-sm font-medium hover:bg-[#A11B4A] transition-colors cursor-pointer"
               >
                 Browse Gallery
               </button>
@@ -252,7 +252,7 @@ export function CartDrawer({
             <div className="space-y-5">
               {/* Delivery / Pickup Selector */}
               <div>
-                <span className="block text-xs font-semibold text-[#23191D] mb-2">
+                <span className="block text-xs font-semibold text-[#2B121D] mb-2">
                   Fulfilment Option
                 </span>
                 <div className="grid grid-cols-2 gap-2">
@@ -263,8 +263,8 @@ export function CartDrawer({
                     }
                     className={`min-h-[40px] py-2 px-3 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                       form.fulfilment === 'delivery'
-                        ? 'border-[#B83262] bg-[#FCEFF4] text-[#B83262]'
-                        : 'border-[#EAD5DC] bg-white text-[#5A4950]'
+                        ? 'border-[#C2255C] bg-[#FCE4EE] text-[#A11B4A]'
+                        : 'border-[#F4C2D7] bg-white text-[#5E3E4B]'
                     }`}
                   >
                     Home Delivery
@@ -276,8 +276,8 @@ export function CartDrawer({
                     }
                     className={`min-h-[40px] py-2 px-3 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                       form.fulfilment === 'pickup'
-                        ? 'border-[#B83262] bg-[#FCEFF4] text-[#B83262]'
-                        : 'border-[#EAD5DC] bg-white text-[#5A4950]'
+                        ? 'border-[#C2255C] bg-[#FCE4EE] text-[#A11B4A]'
+                        : 'border-[#F4C2D7] bg-white text-[#5E3E4B]'
                     }`}
                   >
                     Store Pickup (Free)
@@ -285,7 +285,7 @@ export function CartDrawer({
                 </div>
               </div>
 
-              <div className="rounded-lg bg-[#FCEFF4] border border-[#F1DCE3] px-4 py-3 text-xs text-[#3F2E35]">
+              <div className="rounded-lg bg-[#FCE4EE] border border-[#F4C2D7] px-4 py-3 text-xs text-[#432633]">
                 {form.fulfilment === 'pickup' ? (
                   <span className="font-medium text-emerald-700">
                     Free pickup at {siteSettings.address}.
@@ -307,7 +307,7 @@ export function CartDrawer({
               </div>
 
               {/* Line Items */}
-              <ul className="divide-y divide-[#F1DCE3]">
+              <ul className="space-y-3">
                 {items.map((item) => {
                   const hasCustom = Boolean(
                     item.personalisation &&
@@ -317,8 +317,11 @@ export function CartDrawer({
                   const unitPrice = item.product.price + customFee;
 
                   return (
-                    <li key={item.cartKey} className="py-4 flex gap-3.5">
-                      <div className="w-18 h-18 rounded-lg overflow-hidden bg-[#FCEFF4] border border-[#F1DCE3] shrink-0">
+                    <li
+                      key={item.cartKey}
+                      className="rounded-xl bg-white border border-[#F4C2D7] p-3.5 flex gap-3.5"
+                    >
+                      <div className="w-18 h-18 rounded-lg overflow-hidden bg-[#FCE4EE] border border-[#F4C2D7] shrink-0">
                         <ResilientImage
                           src={item.product.image}
                           alt={item.product.imageAlt}
@@ -330,10 +333,10 @@ export function CartDrawer({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <h3 className="text-sm font-semibold text-[#23191D] leading-snug">
+                            <h3 className="text-sm font-semibold text-[#2B121D] leading-snug">
                               {item.product.name}
                             </h3>
-                            <p className="text-[11px] text-[#6E5C63] tabular-nums mt-0.5">
+                            <p className="text-[11px] text-[#5E3E4B] tabular-nums mt-0.5">
                               Rate: {formatINR(item.product.price)}
                               {customFee > 0 ? ` + ${formatINR(customFee)} custom` : ''}
                             </p>
@@ -342,17 +345,17 @@ export function CartDrawer({
                             type="button"
                             onClick={() => onRemoveItem(item.cartKey)}
                             aria-label={`Remove ${item.product.name}`}
-                            className="p-1.5 text-[#8E7982] hover:text-red-600 transition-colors cursor-pointer"
+                            className="p-1.5 text-[#8C6173] hover:text-red-600 transition-colors cursor-pointer"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
 
                         {item.personalisation && (
-                          <div className="mt-1 text-xs text-[#6E5C63] space-y-0.5">
+                          <div className="mt-1 text-xs text-[#5E3E4B] space-y-0.5">
                             <p>Wrap: {item.personalisation.wrapStyle}</p>
                             {item.personalisation.customName && (
-                              <p className="text-[#B83262] font-medium">
+                              <p className="text-[#C2255C] font-medium">
                                 Engraving: “{item.personalisation.customName}”
                               </p>
                             )}
@@ -365,12 +368,12 @@ export function CartDrawer({
                         )}
 
                         <div className="mt-3 flex items-center justify-between">
-                          <div className="inline-flex items-center border border-[#EAD5DC] rounded-md bg-white">
+                          <div className="inline-flex items-center border border-[#F4C2D7] rounded-md bg-[#FDF0F5]">
                             <button
                               type="button"
                               aria-label={`Decrease quantity of ${item.product.name}`}
                               onClick={() => onUpdateQty(item.cartKey, -1)}
-                              className="min-w-[36px] min-h-[36px] inline-flex items-center justify-center text-[#23191D] hover:text-[#B83262] cursor-pointer"
+                              className="min-w-[36px] min-h-[36px] inline-flex items-center justify-center text-[#2B121D] hover:text-[#C2255C] cursor-pointer"
                             >
                               <Minus className="w-3.5 h-3.5" />
                             </button>
@@ -381,13 +384,13 @@ export function CartDrawer({
                               type="button"
                               aria-label={`Increase quantity of ${item.product.name}`}
                               onClick={() => onUpdateQty(item.cartKey, 1)}
-                              className="min-w-[36px] min-h-[36px] inline-flex items-center justify-center text-[#23191D] hover:text-[#B83262] cursor-pointer"
+                              className="min-w-[36px] min-h-[36px] inline-flex items-center justify-center text-[#2B121D] hover:text-[#C2255C] cursor-pointer"
                             >
                               <Plus className="w-3.5 h-3.5" />
                             </button>
                           </div>
 
-                          <span className="text-sm font-semibold text-[#23191D] tabular-nums">
+                          <span className="text-sm font-semibold text-[#2B121D] tabular-nums">
                             {formatINR(unitPrice * item.quantity)}
                           </span>
                         </div>
@@ -399,12 +402,12 @@ export function CartDrawer({
 
               {/* Promo Code Input */}
               {siteSettings.promoCodesEnabled && (
-                <div className="rounded-xl bg-white border border-[#F1DCE3] p-3.5 space-y-2">
+                <div className="rounded-xl bg-white border border-[#F4C2D7] p-3.5 space-y-2">
                   <label
                     htmlFor="cart-promo-input"
-                    className="flex items-center gap-1.5 text-xs font-semibold text-[#23191D]"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-[#2B121D]"
                   >
-                    <Tag className="w-3.5 h-3.5 text-[#B83262]" aria-hidden="true" />
+                    <Tag className="w-3.5 h-3.5 text-[#C2255C]" aria-hidden="true" />
                     <span>Promo Code (Try WISH5 or GIFT100)</span>
                   </label>
                   <div className="flex items-center gap-2">
@@ -414,13 +417,13 @@ export function CartDrawer({
                       value={promoInput}
                       onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
                       placeholder="Enter promo code"
-                      className="flex-1 min-h-[40px] px-3 py-2 text-base sm:text-xs font-mono uppercase bg-[#FDF9FA] border border-[#EAD5DC] rounded-lg focus:outline-none focus:border-[#B83262]"
+                      className="flex-1 min-h-[40px] px-3 py-2 text-base sm:text-xs font-mono uppercase bg-[#FDF0F5]/60 border border-[#F4C2D7] rounded-lg focus:outline-none focus:bg-white focus:border-[#C2255C]"
                     />
                     {appliedPromo ? (
                       <button
                         type="button"
                         onClick={handleRemovePromo}
-                        className="min-h-[40px] px-3.5 py-2 rounded-lg border border-[#EAD5DC] text-xs font-semibold text-red-700 hover:bg-red-50 cursor-pointer"
+                        className="min-h-[40px] px-3.5 py-2 rounded-lg border border-[#F4C2D7] text-xs font-semibold text-red-700 hover:bg-red-50 cursor-pointer"
                       >
                         Remove
                       </button>
@@ -428,7 +431,7 @@ export function CartDrawer({
                       <button
                         type="button"
                         onClick={handleApplyPromo}
-                        className="min-h-[40px] px-4 py-2 rounded-lg bg-[#23191D] text-white text-xs font-semibold hover:bg-[#B83262] transition-colors cursor-pointer"
+                        className="min-h-[40px] px-4 py-2 rounded-lg bg-[#C2255C] text-white text-xs font-semibold hover:bg-[#A11B4A] transition-colors cursor-pointer"
                       >
                         Apply
                       </button>
@@ -463,7 +466,7 @@ export function CartDrawer({
               )}
 
               <div>
-                <span className="block text-xs font-semibold text-[#23191D] mb-2">
+                <span className="block text-xs font-semibold text-[#2B121D] mb-2">
                   Fulfilment Method
                 </span>
                 <div className="grid grid-cols-2 gap-2">
@@ -474,8 +477,8 @@ export function CartDrawer({
                     }
                     className={`min-h-[42px] py-2.5 px-3 rounded-lg border text-xs font-medium cursor-pointer ${
                       form.fulfilment === 'delivery'
-                        ? 'border-[#B83262] bg-[#FCEFF4] text-[#B83262]'
-                        : 'border-[#EAD5DC] bg-white text-[#5A4950]'
+                        ? 'border-[#C2255C] bg-[#FCE4EE] text-[#A11B4A]'
+                        : 'border-[#F4C2D7] bg-white text-[#5E3E4B]'
                     }`}
                   >
                     Home Delivery
@@ -487,8 +490,8 @@ export function CartDrawer({
                     }
                     className={`min-h-[42px] py-2.5 px-3 rounded-lg border text-xs font-medium cursor-pointer ${
                       form.fulfilment === 'pickup'
-                        ? 'border-[#B83262] bg-[#FCEFF4] text-[#B83262]'
-                        : 'border-[#EAD5DC] bg-white text-[#5A4950]'
+                        ? 'border-[#C2255C] bg-[#FCE4EE] text-[#A11B4A]'
+                        : 'border-[#F4C2D7] bg-white text-[#5E3E4B]'
                     }`}
                   >
                     Ambala Store Pickup
@@ -497,8 +500,8 @@ export function CartDrawer({
               </div>
 
               {form.fulfilment === 'pickup' && (
-                <div className="rounded-lg bg-[#FCEFF4] border border-[#F1DCE3] p-3 text-xs text-[#3F2E35] flex items-start gap-2">
-                  <MapPin className="w-4 h-4 text-[#B83262] shrink-0 mt-0.5" />
+                <div className="rounded-lg bg-[#FCE4EE] border border-[#F4C2D7] p-3 text-xs text-[#432633] flex items-start gap-2">
+                  <MapPin className="w-4 h-4 text-[#C2255C] shrink-0 mt-0.5" />
                   <span>
                     Pickup Counter: <strong>{siteSettings.address}</strong> ({siteSettings.hours})
                   </span>
@@ -508,7 +511,7 @@ export function CartDrawer({
               <div>
                 <label
                   htmlFor="checkout-name"
-                  className="block text-xs font-semibold text-[#23191D] mb-1"
+                  className="block text-xs font-semibold text-[#2B121D] mb-1"
                 >
                   Billing / Recipient Full Name
                 </label>
@@ -521,7 +524,7 @@ export function CartDrawer({
                     setForm((prev) => ({ ...prev, customerName: e.target.value }))
                   }
                   placeholder="Full name for invoice & delivery"
-                  className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#EAD5DC] rounded-lg focus:outline-none focus:border-[#B83262]"
+                  className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#F4C2D7] rounded-lg focus:outline-none focus:border-[#C2255C]"
                 />
                 {errors.customerName && (
                   <p className="mt-1 text-xs text-red-600">{errors.customerName}</p>
@@ -532,7 +535,7 @@ export function CartDrawer({
                 <div>
                   <label
                     htmlFor="checkout-phone"
-                    className="block text-xs font-semibold text-[#23191D] mb-1"
+                    className="block text-xs font-semibold text-[#2B121D] mb-1"
                   >
                     Mobile Number
                   </label>
@@ -546,7 +549,7 @@ export function CartDrawer({
                       setForm((prev) => ({ ...prev, phone: e.target.value }))
                     }
                     placeholder="10-digit mobile"
-                    className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#EAD5DC] rounded-lg focus:outline-none focus:border-[#B83262]"
+                    className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#F4C2D7] rounded-lg focus:outline-none focus:border-[#C2255C]"
                   />
                   {errors.phone && (
                     <p className="mt-1 text-xs text-red-600">{errors.phone}</p>
@@ -556,7 +559,7 @@ export function CartDrawer({
                 <div>
                   <label
                     htmlFor="checkout-email"
-                    className="block text-xs font-semibold text-[#23191D] mb-1"
+                    className="block text-xs font-semibold text-[#2B121D] mb-1"
                   >
                     Email for Bill (optional)
                   </label>
@@ -569,7 +572,7 @@ export function CartDrawer({
                       setForm((prev) => ({ ...prev, email: e.target.value }))
                     }
                     placeholder="you@example.com"
-                    className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#EAD5DC] rounded-lg focus:outline-none focus:border-[#B83262]"
+                    className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#F4C2D7] rounded-lg focus:outline-none focus:border-[#C2255C]"
                   />
                   {errors.email && (
                     <p className="mt-1 text-xs text-red-600">{errors.email}</p>
@@ -582,7 +585,7 @@ export function CartDrawer({
                   <div>
                     <label
                       htmlFor="checkout-address"
-                      className="block text-xs font-semibold text-[#23191D] mb-1"
+                      className="block text-xs font-semibold text-[#2B121D] mb-1"
                     >
                       Delivery &amp; Billing Address
                     </label>
@@ -595,7 +598,7 @@ export function CartDrawer({
                         setForm((prev) => ({ ...prev, address: e.target.value }))
                       }
                       placeholder="House/Flat No, Sector/Street, Landmark"
-                      className="w-full px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#EAD5DC] rounded-lg focus:outline-none focus:border-[#B83262]"
+                      className="w-full px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#F4C2D7] rounded-lg focus:outline-none focus:border-[#C2255C]"
                     />
                     {errors.address && (
                       <p className="mt-1 text-xs text-red-600">{errors.address}</p>
@@ -605,7 +608,7 @@ export function CartDrawer({
                   <div>
                     <label
                       htmlFor="checkout-pincode"
-                      className="block text-xs font-semibold text-[#23191D] mb-1"
+                      className="block text-xs font-semibold text-[#2B121D] mb-1"
                     >
                       City &amp; PIN Code (Haryana / India)
                     </label>
@@ -618,7 +621,7 @@ export function CartDrawer({
                         setForm((prev) => ({ ...prev, cityPincode: e.target.value }))
                       }
                       placeholder="e.g. Ambala Cantt, 133001"
-                      className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#EAD5DC] rounded-lg focus:outline-none focus:border-[#B83262]"
+                      className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#F4C2D7] rounded-lg focus:outline-none focus:border-[#C2255C]"
                     />
                     {errors.cityPincode && (
                       <p className="mt-1 text-xs text-red-600">
@@ -632,7 +635,7 @@ export function CartDrawer({
               <div>
                 <label
                   htmlFor="checkout-gstin"
-                  className="block text-xs font-semibold text-[#23191D] mb-1"
+                  className="block text-xs font-semibold text-[#2B121D] mb-1"
                 >
                   GSTIN for Business Invoice (optional)
                 </label>
@@ -645,7 +648,7 @@ export function CartDrawer({
                     setForm((prev) => ({ ...prev, gstin: e.target.value.toUpperCase() }))
                   }
                   placeholder="15-character GSTIN (leave blank for personal)"
-                  className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm font-mono uppercase bg-white border border-[#EAD5DC] rounded-lg focus:outline-none focus:border-[#B83262]"
+                  className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm font-mono uppercase bg-white border border-[#F4C2D7] rounded-lg focus:outline-none focus:border-[#C2255C]"
                 />
                 {errors.gstin && (
                   <p className="mt-1 text-xs text-red-600">{errors.gstin}</p>
@@ -655,7 +658,7 @@ export function CartDrawer({
               <div>
                 <label
                   htmlFor="checkout-payment"
-                  className="block text-xs font-semibold text-[#23191D] mb-1"
+                  className="block text-xs font-semibold text-[#2B121D] mb-1"
                 >
                   Payment Preference
                 </label>
@@ -668,7 +671,7 @@ export function CartDrawer({
                       paymentMethod: e.target.value as CheckoutForm['paymentMethod'],
                     }))
                   }
-                  className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#EAD5DC] rounded-lg focus:outline-none focus:border-[#B83262]"
+                  className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-[#F4C2D7] rounded-lg focus:outline-none focus:border-[#C2255C]"
                 >
                   <option value="cod">Cash on Delivery (COD)</option>
                   <option value="upi">UPI on Confirmation</option>
@@ -689,19 +692,19 @@ export function CartDrawer({
         {items.length > 0 && step !== 'confirmed' && (
           <div
             data-testid="cart-bill-summary"
-            className="no-print px-4 sm:px-6 py-4 sm:py-5 border-t border-[#F1DCE3] bg-white space-y-3"
+            className="no-print px-4 sm:px-6 py-4 sm:py-5 border-t border-[#F4C2D7] bg-white space-y-3"
           >
-            <dl className="space-y-1.5 text-xs text-[#5A4950]">
+            <dl className="space-y-1.5 text-xs text-[#5E3E4B]">
               <div className="flex justify-between">
                 <dt>Item Subtotal ({totals.itemCount} items)</dt>
-                <dd className="tabular-nums font-medium text-[#23191D]">
+                <dd className="tabular-nums font-medium text-[#2B121D]">
                   {formatINR(totals.subtotal)}
                 </dd>
               </div>
               {totals.personalisationTotal > 0 && (
                 <div className="flex justify-between">
                   <dt>Personalisation &amp; Engraving</dt>
-                  <dd className="tabular-nums font-medium text-[#23191D]">
+                  <dd className="tabular-nums font-medium text-[#2B121D]">
                     +{formatINR(totals.personalisationTotal)}
                   </dd>
                 </div>
@@ -718,19 +721,19 @@ export function CartDrawer({
                 <dt>
                   Delivery ({form.fulfilment === 'pickup' ? 'Store Pickup' : 'Standard'})
                 </dt>
-                <dd className="tabular-nums font-medium text-[#23191D]">
+                <dd className="tabular-nums font-medium text-[#2B121D]">
                   {totals.deliveryFee === 0 ? 'Free' : formatINR(totals.deliveryFee)}
                 </dd>
               </div>
-              <div className="flex justify-between text-[11px] text-[#6E5C63]">
+              <div className="flex justify-between text-[11px] text-[#5E3E4B]">
                 <dt>
                   Taxable {formatINR(totals.taxableValue)} + GST ({GST_RATE_PERCENT}% incl.)
                 </dt>
                 <dd className="tabular-nums">{formatINR(totals.gstAmount)}</dd>
               </div>
-              <div className="pt-2 border-t border-[#F6E9EE] flex justify-between text-sm font-semibold text-[#23191D]">
+              <div className="pt-2 border-t border-[#FCE4EE] flex justify-between text-sm font-semibold text-[#2B121D]">
                 <dt>Grand Total</dt>
-                <dd className="tabular-nums text-base text-[#B83262]">
+                <dd className="tabular-nums text-base text-[#C2255C]">
                   {formatINR(totals.total)}
                 </dd>
               </div>
@@ -741,7 +744,7 @@ export function CartDrawer({
                 <button
                   type="button"
                   onClick={() => setStep('checkout')}
-                  className="w-full min-h-[46px] py-3 rounded-lg bg-[#B83262] text-white text-sm font-semibold hover:bg-[#98254F] transition-colors cursor-pointer"
+                  className="w-full min-h-[46px] py-3 rounded-lg bg-[#C2255C] text-white text-sm font-semibold hover:bg-[#A11B4A] transition-colors cursor-pointer"
                 >
                   Proceed to Billing · {formatINR(totals.total)}
                 </button>
@@ -772,7 +775,7 @@ export function CartDrawer({
                   type="button"
                   disabled={submitting}
                   onClick={() => setStep('bag')}
-                  className="min-h-[46px] px-4 py-3 rounded-lg border border-[#EAD5DC] text-xs font-semibold text-[#23191D] hover:border-[#B83262] cursor-pointer disabled:opacity-60"
+                  className="min-h-[46px] px-4 py-3 rounded-lg border border-[#F4C2D7] bg-white text-xs font-semibold text-[#2B121D] hover:border-[#C2255C] cursor-pointer disabled:opacity-60"
                 >
                   Back
                 </button>
@@ -780,7 +783,7 @@ export function CartDrawer({
                   type="submit"
                   form="checkout-form"
                   disabled={submitting}
-                  className="flex-1 min-h-[46px] py-3 rounded-lg bg-[#B83262] text-white text-sm font-semibold hover:bg-[#98254F] transition-colors cursor-pointer disabled:opacity-60"
+                  className="flex-1 min-h-[46px] py-3 rounded-lg bg-[#C2255C] text-white text-sm font-semibold hover:bg-[#A11B4A] transition-colors cursor-pointer disabled:opacity-60"
                 >
                   {submitting
                     ? 'Generating Bill...'

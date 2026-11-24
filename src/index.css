@@ -3,6 +3,14 @@
 @theme {
   --font-display: "Playfair Display", Georgia, serif;
   --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --color-wm-white: #ffffff;
+  --color-wm-pink-soft: #fdf0f5;
+  --color-wm-pink: #fce4ee;
+  --color-wm-pink-border: #f4c2d7;
+  --color-wm-accent: #c2255c;
+  --color-wm-accent-hover: #a11b4a;
+  --color-wm-ink: #2b121d;
+  --color-wm-ink-muted: #5e3e4b;
 }
 
 @layer base {
@@ -10,10 +18,14 @@
     font-family: var(--font-sans);
     scroll-behavior: smooth;
     overflow-x: clip;
+    background-color: #ffffff;
+    color: #2b121d;
   }
 
   body {
     overflow-x: clip;
+    background-color: #ffffff;
+    color: #2b121d;
   }
 
   h1, h2, h3, .font-display {

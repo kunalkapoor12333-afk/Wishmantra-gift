@@ -248,7 +248,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FDF9FA] text-[#23191D]">
+    <div className="min-h-screen flex flex-col bg-white text-[#2B121D]">
       <StoreHeader
         cartCount={totals.itemCount}
         wishlistCount={wishlistIds.length}
@@ -276,7 +276,7 @@ export default function App() {
               {Array.from({ length: 6 }).map((_, idx) => (
                 <div
                   key={idx}
-                  className="h-96 rounded-2xl bg-white border border-[#F1DCE3] animate-pulse"
+                  className="h-96 rounded-2xl bg-[#FDF0F5] border border-[#F4C2D7] animate-pulse"
                 />
               ))}
             </div>
@@ -333,11 +333,11 @@ export default function App() {
       />
 
       {totals.itemCount > 0 && !cartOpen && !selectedProduct && (
-        <div className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#FDF9FA]/95 backdrop-blur-sm border-t border-[#F1DCE3] px-4 py-3 shadow-[0_-4px_20px_rgba(35,25,29,0.08)]">
+        <div className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-[#FDF0F5]/95 backdrop-blur-sm border-t border-[#F4C2D7] px-4 py-3 shadow-[0_-4px_20px_rgba(194,37,92,0.1)]">
           <button
             type="button"
             onClick={() => setCartOpen(true)}
-            className="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-[#B83262] text-white text-sm font-semibold flex items-center justify-between cursor-pointer active:bg-[#98254F]"
+            className="w-full min-h-[46px] px-4 py-2.5 rounded-xl bg-[#C2255C] text-white text-sm font-semibold flex items-center justify-between cursor-pointer active:bg-[#A11B4A]"
           >
             <span className="tabular-nums">
               {totals.itemCount} {totals.itemCount === 1 ? 'item' : 'items'} in bag
@@ -368,7 +368,7 @@ export default function App() {
         <div
           role="status"
           aria-live="polite"
-          className={`fixed left-4 right-4 sm:left-6 sm:right-auto sm:max-w-sm z-40 rounded-lg bg-[#23191D] text-[#FDF9FA] px-4 py-3 text-sm font-medium shadow-lg flex items-center justify-between sm:justify-start gap-3 ${
+          className={`fixed left-4 right-4 sm:left-6 sm:right-auto sm:max-w-sm z-40 rounded-xl bg-[#6B1839] text-white px-4 py-3 text-sm font-medium shadow-lg flex items-center justify-between sm:justify-start gap-3 ${
             totals.itemCount > 0 && !cartOpen
               ? 'bottom-36 md:bottom-6'
               : 'bottom-20 md:bottom-6'
@@ -381,7 +381,7 @@ export default function App() {
               setToastMessage(null);
               setCartOpen(true);
             }}
-            className="text-xs font-semibold text-[#F7B7CD] hover:underline whitespace-nowrap shrink-0 cursor-pointer"
+            className="text-xs font-semibold text-[#FFD6E6] hover:underline whitespace-nowrap shrink-0 cursor-pointer"
           >
             View Bag
           </button>

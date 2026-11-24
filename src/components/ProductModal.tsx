@@ -86,21 +86,21 @@ export function ProductModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="product-modal-title"
-        className="relative w-full max-w-3xl max-h-[92dvh] overflow-y-auto bg-[#FDF9FA] rounded-t-2xl sm:rounded-2xl border border-[#F1DCE3] shadow-2xl"
+        className="relative w-full max-w-3xl max-h-[92dvh] overflow-y-auto bg-white rounded-t-2xl sm:rounded-2xl border border-[#F4C2D7] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Close product customisation modal"
-          className="absolute right-3.5 top-3.5 sm:right-4 sm:top-4 z-10 min-w-[40px] min-h-[40px] inline-flex items-center justify-center p-2 rounded-lg bg-white/95 border border-[#F1DCE3] text-[#23191D] hover:text-[#B83262] transition-colors cursor-pointer"
+          className="absolute right-3.5 top-3.5 sm:right-4 sm:top-4 z-10 min-w-[40px] min-h-[40px] inline-flex items-center justify-center p-2 rounded-lg bg-white/95 border border-[#F4C2D7] text-[#2B121D] hover:text-[#C2255C] transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-12">
-          <div className="md:col-span-5 bg-[#FCEFF4] p-4 sm:p-5 flex flex-col justify-between">
-            <div className="aspect-[16/10] sm:aspect-[4/3] md:aspect-square rounded-xl overflow-hidden bg-white border border-[#F1DCE3]">
+          <div className="md:col-span-5 bg-[#FCE4EE] p-4 sm:p-5 flex flex-col justify-between border-b md:border-b-0 md:border-r border-[#F4C2D7]">
+            <div className="aspect-[16/10] sm:aspect-[4/3] md:aspect-square rounded-xl overflow-hidden bg-white border border-[#F4C2D7]">
               <ResilientImage
                 src={product.image}
                 alt={product.imageAlt}
@@ -109,11 +109,11 @@ export function ProductModal({
               />
             </div>
 
-            <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-[#EAD5DC] text-xs text-[#5A4950] space-y-1">
-              <p className="font-semibold text-[#23191D]">Crafted at WishMantra</p>
+            <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-[#F4C2D7] text-xs text-[#5E3E4B] space-y-1">
+              <p className="font-semibold text-[#2B121D]">Crafted at WishMantra</p>
               <p>Checked and ribbon-packed by hand before pickup or Haryana dispatch.</p>
               {product.customisable && (
-                <p className="text-[#B83262] font-medium">
+                <p className="text-[#A11B4A] font-medium">
                   Optional engraving / note (+{formatINR(product.personalisationFee)} / item)
                 </p>
               )}
@@ -122,8 +122,8 @@ export function ProductModal({
 
           <form onSubmit={handleSubmit} className="md:col-span-7 p-5 sm:p-7 space-y-5 bg-white">
             <div>
-              <div className="flex items-center gap-2 text-xs text-[#6E5C63] mb-1.5">
-                <span className="uppercase tracking-wider font-semibold text-[#B83262]">
+              <div className="flex items-center gap-2 text-xs text-[#5E3E4B] mb-1.5">
+                <span className="uppercase tracking-wider font-semibold text-[#C2255C]">
                   {product.category}
                 </span>
                 <span aria-hidden="true">·</span>
@@ -134,21 +134,21 @@ export function ProductModal({
               </div>
               <h2
                 id="product-modal-title"
-                className="font-display text-2xl sm:text-3xl font-semibold text-[#23191D] leading-tight"
+                className="font-display text-2xl sm:text-3xl font-semibold text-[#2B121D] leading-tight"
               >
                 {product.name}
               </h2>
-              <p className="mt-2.5 text-sm text-[#5A4950] leading-relaxed">
+              <p className="mt-2.5 text-sm text-[#5E3E4B] leading-relaxed">
                 {product.details}
               </p>
             </div>
 
             {product.customisable && (
-              <div className="space-y-4 pt-4 border-t border-[#F1DCE3]">
+              <div className="space-y-4 pt-4 border-t border-[#FCE4EE]">
                 <div>
                   <label
                     htmlFor="custom-name-input"
-                    className="block text-xs font-semibold text-[#23191D] mb-1.5"
+                    className="block text-xs font-semibold text-[#2B121D] mb-1.5"
                   >
                     Engraved Name / Monogram (optional)
                   </label>
@@ -159,14 +159,14 @@ export function ProductModal({
                     value={customName}
                     onChange={(e) => setCustomName(e.target.value)}
                     placeholder="e.g. Aarav & Meera, or Happy Birthday Riya"
-                    className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-[#FDF9FA] border border-[#EAD5DC] rounded-lg text-[#23191D] placeholder:text-[#9A868E] focus:outline-none focus:border-[#B83262]"
+                    className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-[#FDF0F5]/60 border border-[#F4C2D7] rounded-lg text-[#2B121D] placeholder:text-[#8C6173] focus:outline-none focus:bg-white focus:border-[#C2255C]"
                   />
                 </div>
 
                 <div>
                   <label
                     htmlFor="wrap-style-select"
-                    className="block text-xs font-semibold text-[#23191D] mb-1.5"
+                    className="block text-xs font-semibold text-[#2B121D] mb-1.5"
                   >
                     Ribbon &amp; Wrap Finish
                   </label>
@@ -174,7 +174,7 @@ export function ProductModal({
                     id="wrap-style-select"
                     value={wrapStyle}
                     onChange={(e) => setWrapStyle(e.target.value as WrapStyle)}
-                    className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-[#FDF9FA] border border-[#EAD5DC] rounded-lg text-[#23191D] focus:outline-none focus:border-[#B83262]"
+                    className="w-full min-h-[42px] px-3.5 py-2.5 text-base sm:text-sm bg-[#FDF0F5]/60 border border-[#F4C2D7] rounded-lg text-[#2B121D] focus:outline-none focus:bg-white focus:border-[#C2255C]"
                   >
                     {WRAP_STYLES.map((style) => (
                       <option key={style} value={style}>
@@ -187,7 +187,7 @@ export function ProductModal({
                 <div>
                   <label
                     htmlFor="gift-note-input"
-                    className="block text-xs font-semibold text-[#23191D] mb-1.5"
+                    className="block text-xs font-semibold text-[#2B121D] mb-1.5"
                   >
                     Gift Card Message (optional)
                   </label>
@@ -198,21 +198,21 @@ export function ProductModal({
                     value={giftNote}
                     onChange={(e) => setGiftNote(e.target.value)}
                     placeholder="Write a personal note to include on the printed card..."
-                    className="w-full px-3.5 py-2.5 text-base sm:text-sm bg-[#FDF9FA] border border-[#EAD5DC] rounded-lg text-[#23191D] placeholder:text-[#9A868E] focus:outline-none focus:border-[#B83262]"
+                    className="w-full px-3.5 py-2.5 text-base sm:text-sm bg-[#FDF0F5]/60 border border-[#F4C2D7] rounded-lg text-[#2B121D] placeholder:text-[#8C6173] focus:outline-none focus:bg-white focus:border-[#C2255C]"
                   />
                 </div>
               </div>
             )}
 
-            <div className="pt-4 border-t border-[#F1DCE3] space-y-3.5">
+            <div className="pt-4 border-t border-[#FCE4EE] space-y-3.5">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-xs font-semibold text-[#5A4950]">Quantity</span>
-                <div className="inline-flex items-center border border-[#EAD5DC] rounded-lg bg-[#FDF9FA]">
+                <span className="text-xs font-semibold text-[#5E3E4B]">Quantity</span>
+                <div className="inline-flex items-center border border-[#F4C2D7] rounded-lg bg-[#FDF0F5]">
                   <button
                     type="button"
                     aria-label="Decrease quantity"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="min-w-[42px] min-h-[42px] inline-flex items-center justify-center text-[#23191D] hover:text-[#B83262] cursor-pointer"
+                    className="min-w-[42px] min-h-[42px] inline-flex items-center justify-center text-[#2B121D] hover:text-[#C2255C] cursor-pointer"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
@@ -223,7 +223,7 @@ export function ProductModal({
                     type="button"
                     aria-label="Increase quantity"
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="min-w-[42px] min-h-[42px] inline-flex items-center justify-center text-[#23191D] hover:text-[#B83262] cursor-pointer"
+                    className="min-w-[42px] min-h-[42px] inline-flex items-center justify-center text-[#2B121D] hover:text-[#C2255C] cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
@@ -258,7 +258,7 @@ export function ProductModal({
 
                 <button
                   type="submit"
-                  className="min-h-[46px] px-5 py-3 rounded-lg bg-[#B83262] text-white text-xs sm:text-sm font-semibold hover:bg-[#98254F] transition-colors tabular-nums cursor-pointer whitespace-nowrap"
+                  className="min-h-[46px] px-5 py-3 rounded-lg bg-[#C2255C] text-white text-xs sm:text-sm font-semibold hover:bg-[#A11B4A] transition-colors tabular-nums cursor-pointer whitespace-nowrap"
                 >
                   Add to Bag · {formatINR(lineTotal)}
                 </button>

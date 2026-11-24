@@ -21,10 +21,10 @@ export function ResilientImage({
       <div
         role="img"
         aria-label={alt}
-        className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#F3EFE9] via-[#EAE3DA] to-[#E2D6D1] text-[#6E6560] p-6 text-center"
+        className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#FFF5F9] via-[#FCE4EE] to-[#FADAE7] text-[#5E3E4B] p-6 text-center"
       >
-        <Gift className="w-7 h-7 text-[#7A2E4D] mb-2" strokeWidth={1.5} />
-        <span className="text-xs font-medium tracking-wide text-[#3D3531]">
+        <Gift className="w-7 h-7 text-[#C2255C] mb-2" strokeWidth={1.5} />
+        <span className="text-xs font-medium tracking-wide text-[#2B121D]">
           {fallbackTitle || alt}
         </span>
       </div>
