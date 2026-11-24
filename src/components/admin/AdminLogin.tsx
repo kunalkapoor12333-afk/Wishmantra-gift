@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, Eye, EyeOff, Lock } from 'lucide-react';
-import { loginAdmin } from '../../utils/api';
+import {
+  checkAdminSessionStatus,
+  loginAdmin,
+  setupAdminPasscode,
+} from '../../utils/api';
 
 interface AdminLoginProps {
   onSuccess: () => void;
@@ -8,24 +12,68 @@ interface AdminLoginProps {
 }
 
 export function AdminLogin({ onSuccess, onBackToStore }: AdminLoginProps) {
+  const [setupRequired, setSetupRequired] = useState(false);
+  const [checkingMode, setCheckingMode] = useState(true);
   const [passcode, setPasscode] = useState('');
+  const [confirmPasscode, setConfirmPasscode] = useState('');
   const [showPasscode, setShowPasscode] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  useEffect(() => {
+    let active = true;
+    checkAdminSessionStatus()
+      .then((status) => {
+        if (!active) return;
+        if (status.authenticated) {
+          onSuccess();
+          return;
+        }
+        setSetupRequired(status.setupRequired);
+      })
+      .finally(() => {
+        if (active) setCheckingMode(false);
+      });
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!passcode.trim()) {
+    const trimmed = passcode.trim();
+    if (!trimmed) {
       setError('Please enter the studio passcode.');
       return;
     }
+
+    if (setupRequired) {
+      if (trimmed.length < 6) {
+        setError('Passcode must be at least 6 characters.');
+        return;
+      }
+      if (trimmed !== confirmPasscode.trim()) {
+        setError('Passcodes do not match.');
+        return;
+      }
+    }
+
     setError(null);
     setSubmitting(true);
     try {
-      await loginAdmin(passcode);
+      if (setupRequired) {
+        await setupAdminPasscode(trimmed);
+      } else {
+        await loginAdmin(trimmed);
+      }
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to sign in.');
+      const msg = err instanceof Error ? err.message : 'Unable to sign in.';
+      setError(msg);
+      if (msg.toLowerCase().includes('setup required')) {
+        setSetupRequired(true);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -54,12 +102,14 @@ export function AdminLogin({ onSuccess, onBackToStore }: AdminLoginProps) {
           </div>
           <div>
             <h1 className="font-display text-2xl font-semibold text-slate-900">
-              Admin Dashboard
+              {setupRequired ? 'Set Admin Passcode' : 'Admin Dashboard'}
             </h1>
           </div>
         </div>
         <p className="text-sm text-slate-500 mb-6">
-          Sign in to manage WishMantra orders, inventory, enquiries, and store settings.
+          {setupRequired
+            ? 'Create your studio admin passcode once to protect WishMantra orders, inventory, enquiries, and store settings.'
+            : 'Sign in to manage WishMantra orders, inventory, enquiries, and store settings.'}
         </p>
 
         {error && (
@@ -77,16 +127,17 @@ export function AdminLogin({ onSuccess, onBackToStore }: AdminLoginProps) {
               htmlFor="admin-passcode-input"
               className="block text-xs font-semibold text-slate-700 mb-1.5"
             >
-              Studio Passcode
+              {setupRequired ? 'New Studio Passcode (min 6 chars)' : 'Studio Passcode'}
             </label>
             <div className="relative">
               <input
                 id="admin-passcode-input"
                 type={showPasscode ? 'text' : 'password'}
-                autoComplete="current-password"
+                autoComplete={setupRequired ? 'new-password' : 'current-password'}
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
-                placeholder="Enter admin passcode"
+                disabled={checkingMode}
+                placeholder={setupRequired ? 'Create a secure passcode' : 'Enter admin passcode'}
                 className="w-full min-h-[44px] pl-3.5 pr-11 py-2.5 text-base sm:text-sm bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-[#D63B70]"
               />
               <button
@@ -100,17 +151,47 @@ export function AdminLogin({ onSuccess, onBackToStore }: AdminLoginProps) {
             </div>
           </div>
 
+          {setupRequired && (
+            <div>
+              <label
+                htmlFor="admin-passcode-confirm"
+                className="block text-xs font-semibold text-slate-700 mb-1.5"
+              >
+                Confirm Passcode
+              </label>
+              <input
+                id="admin-passcode-confirm"
+                type={showPasscode ? 'text' : 'password'}
+                autoComplete="new-password"
+                value={confirmPasscode}
+                onChange={(e) => setConfirmPasscode(e.target.value)}
+                placeholder="Re-enter passcode"
+                className="w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-white border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-[#D63B70]"
+              />
+            </div>
+          )}
+
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || checkingMode}
             className="w-full min-h-[46px] py-2.5 px-4 rounded-xl bg-[#D63B70] text-white text-sm font-semibold hover:bg-[#BE2D5E] transition-colors cursor-pointer disabled:opacity-60"
           >
-            {submitting ? 'Signing in...' : 'Sign In to Admin Panel'}
+            {checkingMode
+              ? 'Checking studio access...'
+              : submitting
+                ? setupRequired
+                  ? 'Saving passcode...'
+                  : 'Signing in...'
+                : setupRequired
+                  ? 'Save Passcode & Open Admin'
+                  : 'Sign In to Admin Panel'}
           </button>
         </form>
 
         <p className="mt-5 pt-4 border-t border-slate-100 text-xs text-slate-500">
-          Default local passcode: <code className="font-mono text-slate-700">wishmantra2026</code>
+          {setupRequired
+            ? 'You can also override this passcode anytime by setting ADMIN_PASSCODE in Settings → Secrets.'
+            : 'Access restricted to authorised WishMantra gallery staff.'}
         </p>
       </div>
     </div>

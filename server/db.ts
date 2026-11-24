@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import {
@@ -912,14 +913,40 @@ export class StoreDatabase {
   readonly db: DatabaseSync;
 
   constructor(dbPath?: string) {
+    const isServerless =
+      process.env.NETLIFY === 'true' ||
+      Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
+      Boolean(process.env.LAMBDA_TASK_ROOT);
+    const defaultPath = isServerless
+      ? path.join(os.tmpdir(), 'wishmantra', 'wishmantra.db')
+      : path.join(process.cwd(), 'data', 'wishmantra.db');
     const resolvedPath =
-      dbPath || path.join(process.cwd(), 'data', 'wishmantra.db');
+      dbPath || process.env.WISHMANTRA_DB_PATH?.trim() || defaultPath;
     if (resolvedPath !== ':memory:') {
       fs.mkdirSync(path.dirname(resolvedPath), { recursive: true });
     }
     this.db = new DatabaseSync(resolvedPath);
+    if (resolvedPath !== ':memory:') {
+      this.db.exec('PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL; PRAGMA busy_timeout = 5000;');
+    }
     this.initSchema();
     this.seedIfEmpty();
+  }
+
+  getAdminPasscodeHash(): string | null {
+    const row = this.db
+      .prepare("SELECT value FROM app_meta WHERE key = 'admin_passcode_hash'")
+      .get() as { value: string } | undefined;
+    return row?.value || null;
+  }
+
+  claimAdminPasscodeHash(hash: string): boolean {
+    const res = this.db
+      .prepare(
+        "INSERT OR IGNORE INTO app_meta (key, value) VALUES ('admin_passcode_hash', ?)"
+      )
+      .run(hash);
+    return Number(res.changes) > 0;
   }
 
   private ensureColumn(table: string, column: string, definition: string): void {
@@ -1415,6 +1442,8 @@ export class StoreDatabase {
 
   updateSiteSettings(patch: Partial<SiteSettings>): SiteSettings {
     const current = this.getSiteSettings();
+    const threshold = Number(patch.freeDeliveryThreshold);
+    const fee = Number(patch.standardDeliveryFee);
     const next: SiteSettings = {
       storeName: patch.storeName?.trim() || current.storeName,
       announcementText:
@@ -1422,12 +1451,12 @@ export class StoreDatabase {
           ? patch.announcementText.trim()
           : current.announcementText,
       freeDeliveryThreshold:
-        patch.freeDeliveryThreshold !== undefined
-          ? Math.max(0, Math.round(Number(patch.freeDeliveryThreshold)))
+        patch.freeDeliveryThreshold !== undefined && Number.isFinite(threshold)
+          ? Math.max(0, Math.round(threshold))
           : current.freeDeliveryThreshold,
       standardDeliveryFee:
-        patch.standardDeliveryFee !== undefined
-          ? Math.max(0, Math.round(Number(patch.standardDeliveryFee)))
+        patch.standardDeliveryFee !== undefined && Number.isFinite(fee)
+          ? Math.max(0, Math.round(fee))
           : current.standardDeliveryFee,
       phoneDisplay: patch.phoneDisplay?.trim() || current.phoneDisplay,
       address: patch.address?.trim() || current.address,
@@ -1692,16 +1721,26 @@ export class StoreDatabase {
     const storedItems: OrderItemRecord[] = [];
 
     for (const line of payload.items) {
+      if (
+        !line ||
+        typeof line.productId !== 'string' ||
+        !Number.isFinite(Number(line.quantity)) ||
+        Number(line.quantity) < 1 ||
+        Number(line.quantity) > 100
+      ) {
+        throw new Error('Each item must specify a valid product and quantity between 1 and 100.');
+      }
+
       const product = this.getProductById(line.productId);
-      if (!product) {
+      if (!product || product.inStock === false) {
         throw new Error(`Product "${line.productId}" is no longer available.`);
       }
-      const qty = Math.max(1, Math.floor(line.quantity));
+      const qty = Math.floor(Number(line.quantity));
       const cleanPersonalisation =
         product.customisable && line.personalisation
           ? {
-              customName: line.personalisation.customName.trim(),
-              giftNote: line.personalisation.giftNote.trim(),
+              customName: (line.personalisation.customName ?? '').trim().slice(0, 80),
+              giftNote: (line.personalisation.giftNote ?? '').trim().slice(0, 240),
               wrapStyle: line.personalisation.wrapStyle,
             }
           : undefined;
@@ -1740,57 +1779,75 @@ export class StoreDatabase {
       freeDeliveryThreshold: settings.freeDeliveryThreshold,
       standardDeliveryFee: settings.standardDeliveryFee,
     });
-    const orderNumber = `WM-${Math.floor(5000 + Math.random() * 4999)}`;
     const now = new Date().toISOString();
 
-    const insertResult = this.db
-      .prepare(
-        `INSERT INTO orders (
-          order_number, customer_name, phone, email, gstin, fulfilment, address, city_pincode,
-          payment_method, items_json, subtotal, personalisation_total, promo_code,
-          promo_discount, delivery_fee, taxable_value, gst_amount, total_amount,
-          status, admin_notes, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', '', ?)`
-      )
-      .run(
-        orderNumber,
-        payload.form.customerName.trim(),
-        payload.form.phone.trim(),
-        (payload.form.email ?? '').trim(),
-        (payload.form.gstin ?? '').trim().toUpperCase(),
-        payload.form.fulfilment,
-        payload.form.fulfilment === 'pickup'
-          ? 'Sadar Bazaar Gallery Pickup'
-          : payload.form.address.trim(),
-        payload.form.fulfilment === 'pickup'
-          ? 'Ambala Cantt, 133001'
-          : payload.form.cityPincode.trim(),
-        payload.form.paymentMethod,
-        JSON.stringify(storedItems),
-        totals.subtotal,
-        totals.personalisationTotal,
-        totals.promoCode,
-        totals.promoDiscount,
-        totals.deliveryFee,
-        totals.taxableValue,
-        totals.gstAmount,
-        totals.total,
-        now
+    this.db.exec('BEGIN IMMEDIATE');
+    try {
+      let orderNumber = `WM-${Math.floor(5000 + Math.random() * 4999)}`;
+      const exists = this.db
+        .prepare('SELECT 1 FROM orders WHERE order_number = ?')
+        .get(orderNumber);
+      if (exists) {
+        orderNumber = `WM-${Date.now().toString().slice(-6)}`;
+      }
+
+      const insertResult = this.db
+        .prepare(
+          `INSERT INTO orders (
+            order_number, customer_name, phone, email, gstin, fulfilment, address, city_pincode,
+            payment_method, items_json, subtotal, personalisation_total, promo_code,
+            promo_discount, delivery_fee, taxable_value, gst_amount, total_amount,
+            status, admin_notes, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', '', ?)`
+        )
+        .run(
+          orderNumber,
+          payload.form.customerName.trim(),
+          payload.form.phone.trim(),
+          (payload.form.email ?? '').trim(),
+          (payload.form.gstin ?? '').trim().toUpperCase(),
+          payload.form.fulfilment,
+          payload.form.fulfilment === 'pickup'
+            ? 'Sadar Bazaar Gallery Pickup'
+            : payload.form.address.trim(),
+          payload.form.fulfilment === 'pickup'
+            ? 'Ambala Cantt, 133001'
+            : payload.form.cityPincode.trim(),
+          payload.form.paymentMethod,
+          JSON.stringify(storedItems),
+          totals.subtotal,
+          totals.personalisationTotal,
+          totals.promoCode,
+          totals.promoDiscount,
+          totals.deliveryFee,
+          totals.taxableValue,
+          totals.gstAmount,
+          totals.total,
+          now
+        );
+
+      // Deduct stock gracefully (clamped at 0)
+      const decStock = this.db.prepare(
+        'UPDATE products SET stock_qty = MAX(0, stock_qty - ?) WHERE id = ?'
       );
+      for (const item of storedItems) {
+        decStock.run(item.quantity, item.productId);
+      }
 
-    // Deduct stock gracefully (clamped at 0)
-    const decStock = this.db.prepare(
-      'UPDATE products SET stock_qty = MAX(0, stock_qty - ?) WHERE id = ?'
-    );
-    for (const item of storedItems) {
-      decStock.run(item.quantity, item.productId);
+      const createdRow = this.db
+        .prepare('SELECT * FROM orders WHERE id = ?')
+        .get(Number(insertResult.lastInsertRowid)) as unknown as OrderRow;
+
+      this.db.exec('COMMIT');
+      return rowToOrder(createdRow);
+    } catch (err) {
+      try {
+        this.db.exec('ROLLBACK');
+      } catch {
+        // ignore rollback error
+      }
+      throw err;
     }
-
-    const createdRow = this.db
-      .prepare('SELECT * FROM orders WHERE id = ?')
-      .get(Number(insertResult.lastInsertRowid)) as unknown as OrderRow;
-
-    return rowToOrder(createdRow);
   }
 
   listOrders(): OrderRecord[] {

@@ -1,6 +1,14 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createAdminToken, verifyAdminToken } from './auth.ts';
+import {
+  createAdminToken,
+  hashPasscode,
+  verifyAdminToken,
+  verifyPasscodeHash,
+} from './auth.ts';
 import { StoreDatabase } from './db.ts';
 
 test('admin token creation and verification works and rejects tampering', () => {
@@ -9,6 +17,41 @@ test('admin token creation and verification works and rejects tampering', () => 
   assert.equal(verifyAdminToken(`${token}tampered`), false);
   assert.equal(verifyAdminToken('invalid'), false);
   assert.equal(verifyAdminToken(null), false);
+});
+
+test('scrypt passcode hashing and atomic claim work properly', () => {
+  const hash = hashPasscode('secure-studio-pass');
+  assert.equal(verifyPasscodeHash('secure-studio-pass', hash), true);
+  assert.equal(verifyPasscodeHash('wrong-pass', hash), false);
+
+  const db = new StoreDatabase(':memory:');
+  assert.equal(db.getAdminPasscodeHash(), null);
+  assert.equal(db.claimAdminPasscodeHash(hash), true);
+  assert.equal(db.claimAdminPasscodeHash('overwrite-attempt'), false);
+  assert.equal(db.getAdminPasscodeHash(), hash);
+});
+
+test('SQLite database saves records permanently to disk across reopen', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'wishmantra-db-'));
+  const dbFile = path.join(tmpDir, 'test.db');
+  try {
+    const db1 = new StoreDatabase(dbFile);
+    const created = db1.createEnquiry({
+      customerName: 'Persisted Tester',
+      phone: '9876543210',
+      city: 'Ambala',
+      subject: 'Persistence verification',
+      message: 'Confirming disk write survives reopen.',
+    });
+    db1.db.close();
+
+    const db2 = new StoreDatabase(dbFile);
+    const enquiries = db2.listEnquiries();
+    assert.ok(enquiries.some((e) => e.id === created.id && e.customerName === 'Persisted Tester'));
+    db2.db.close();
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
 });
 
 test('StoreDatabase seeds 30 Haryana-friendly products, 5 orders, categories, enquiries, and full KPI summary', () => {
@@ -63,7 +106,6 @@ test('StoreDatabase supports product stock updates, categories CRUD, enquiries, 
   assert.equal(updated?.stockQty, 20);
   assert.equal(db.deleteProduct(created.id), true);
 
-  // Categories CRUD
   const newCat = db.createCategory({
     name: 'Festive Combos',
     description: 'Diwali and Rakhi hampers',
@@ -71,7 +113,6 @@ test('StoreDatabase supports product stock updates, categories CRUD, enquiries, 
   assert.equal(newCat.name, 'Festive Combos');
   assert.equal(db.deleteCategory(newCat.id), true);
 
-  // Enquiries flow
   const enq = db.createEnquiry({
     customerName: 'Kavita Rani',
     phone: '9812011223',
@@ -88,7 +129,6 @@ test('StoreDatabase supports product stock updates, categories CRUD, enquiries, 
   assert.equal(updatedEnq?.status, 'Replied');
   assert.equal(updatedEnq?.adminReply, 'Shared quote on WhatsApp.');
 
-  // Website settings
   const savedSettings = db.updateSiteSettings({
     freeDeliveryThreshold: 799,
     standardDeliveryFee: 49,

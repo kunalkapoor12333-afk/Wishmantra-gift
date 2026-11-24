@@ -16,26 +16,14 @@ import type {
   SiteSettings,
 } from './storeLogic';
 
-const ADMIN_TOKEN_KEY = 'wishmantra_admin_token';
+let memoryAdminToken: string | null = null;
 
 export function getStoredAdminToken(): string | null {
-  try {
-    return window.sessionStorage.getItem(ADMIN_TOKEN_KEY);
-  } catch {
-    return null;
-  }
+  return memoryAdminToken;
 }
 
 export function setStoredAdminToken(token: string | null): void {
-  try {
-    if (token) {
-      window.sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
-    } else {
-      window.sessionStorage.removeItem(ADMIN_TOKEN_KEY);
-    }
-  } catch {
-    // ignore storage restriction
-  }
+  memoryAdminToken = token;
 }
 
 function hydrateProduct(raw: Product): Product {
@@ -124,6 +112,17 @@ export async function askWishyChat(payload: {
   };
 }
 
+export async function setupAdminPasscode(passcode: string): Promise<string> {
+  const res = await fetch('/api/admin/setup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ passcode }),
+  });
+  const data = await parseJsonResponse<{ token: string }>(res);
+  setStoredAdminToken(data.token);
+  return data.token;
+}
+
 export async function loginAdmin(passcode: string): Promise<string> {
   const res = await fetch('/api/admin/login', {
     method: 'POST',
@@ -135,22 +134,35 @@ export async function loginAdmin(passcode: string): Promise<string> {
   return data.token;
 }
 
-export async function checkAdminSession(): Promise<boolean> {
+export async function checkAdminSessionStatus(): Promise<{
+  authenticated: boolean;
+  setupRequired: boolean;
+}> {
   const token = getStoredAdminToken();
-  if (!token) return false;
   try {
     const res = await fetch('/api/admin/session', {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
-    if (!res.ok) return false;
-    const data = (await res.json()) as { authenticated: boolean };
+    if (!res.ok) return { authenticated: false, setupRequired: false };
+    const data = (await res.json()) as {
+      authenticated?: boolean;
+      setupRequired?: boolean;
+    };
     if (!data.authenticated) {
       setStoredAdminToken(null);
     }
-    return Boolean(data.authenticated);
+    return {
+      authenticated: Boolean(data.authenticated),
+      setupRequired: Boolean(data.setupRequired),
+    };
   } catch {
-    return false;
+    return { authenticated: false, setupRequired: false };
   }
+}
+
+export async function checkAdminSession(): Promise<boolean> {
+  const status = await checkAdminSessionStatus();
+  return status.authenticated;
 }
 
 function adminHeaders(): HeadersInit {
